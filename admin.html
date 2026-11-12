@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin do Bazar</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:16px 0;box-shadow:var(--shadow)}
+  .panel h2{margin:0 0 10px;font-size:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:560px){.grid2{grid-template-columns:1fr}}
+  .f label{display:block;font-size:13px;font-weight:600;margin-bottom:3px}
+  .f input,.f select,.f textarea{width:100%}
+  .item{border-top:1px solid var(--line);padding:14px 0}
+  .item:first-of-type{border-top:none}
+  .item summary{cursor:pointer;display:flex;gap:10px;align-items:center;list-style:none}
+  .item summary::-webkit-details-marker{display:none}
+  .item summary img,.item summary .noimg{width:56px;height:42px;object-fit:cover;border-radius:6px;background:var(--line);flex:0 0 auto}
+  .st{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line)}
+  .st.vendido{background:var(--sold);color:#fff}.st.reservado{background:var(--warn);color:#fff}
+  .photos{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .photos figure{margin:0;position:relative}
+  .photos img{width:96px;height:72px;object-fit:cover;border-radius:8px;display:block}
+  .photos button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer}
+  .photos .mv{left:2px;right:auto}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .bar .btn{width:auto}
+  #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;display:none;z-index:50;max-width:90vw}
+  .dirty{color:var(--warn);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero" style="padding-bottom:0">
+    <h1>Admin do Bazar</h1>
+    <p>Edite itens, preços e fotos. Ao salvar, o site atualiza em ~1 minuto.</p>
+  </header>
+
+  <section class="panel" id="login">
+    <h2>Entrar</h2>
+    <p class="hint">Cole um token do GitHub (fine-grained) com permissão <b>Contents: Read and write</b> só para o repositório do bazar. Ele fica salvo apenas neste navegador.</p>
+    <div class="f"><label for="tok">Token</label><input id="tok" type="password" autocomplete="off" placeholder="github_pat_..."></div>
+    <div class="bar"><button class="btn primary" id="btn-login">Entrar</button></div>
+  </section>
+
+  <div id="app" hidden>
+    <section class="panel">
+      <div class="row">
+        <h2 style="margin:0">Itens</h2><span class="spacer"></span>
+        <span id="dirty" class="dirty" hidden>Alterações não salvas</span>
+      </div>
+      <div class="bar">
+        <button class="btn primary" id="btn-save">Salvar e publicar</button>
+        <button class="btn ghost" id="btn-add">+ Novo item</button>
+        <a class="btn ghost" id="lnk-stats" target="_blank" rel="noopener">Ver analytics</a>
+        <a class="btn ghost" href="./" target="_blank">Ver site</a>
+        <button class="btn ghost" id="btn-logout">Sair</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <select id="flt-city"><option value="">Todas as cidades</option><option value="sp">São Paulo</option><option value="campinas">Campinas</option></select>
+        <select id="flt-st"><option value="">Todos os status</option><option value="disponivel">Disponível</option><option value="reservado">Reservado</option><option value="vendido">Vendido</option></select>
+      </div>
+      <div id="items" style="margin-top:8px"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Configurações</h2>
+      <div class="grid2">
+        <div class="f"><label>WhatsApp São Paulo (55+DDD+número)</label><input id="c-wa-sp"></div>
+        <div class="f"><label>WhatsApp Campinas (55+DDD+número)</label><input id="c-wa-cps"></div>
+        <div class="f"><label>Prazo de retirada SP</label><input type="date" id="c-dl-sp"></div>
+        <div class="f"><label>Prazo de retirada Campinas</label><input type="date" id="c-dl-cps"></div>
+        <div class="f"><label>Código GoatCounter (analytics)</label><input id="c-gc" placeholder="ex.: bazar-mudanca"></div>
+        <div class="f"><label>Frase de destaque</label><input id="c-tag"></div>
+      </div>
+      <div class="bar"><button class="btn primary" id="btn-save-cfg">Salvar configurações</button></div>
+    </section>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="assets/admin.js"></script>
+</body>
+</html>

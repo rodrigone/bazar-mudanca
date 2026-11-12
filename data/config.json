@@ -1,0 +1,23 @@
+{
+  "siteTitle": "Bazar da Mudança",
+  "tagline": "Tudo à venda. Retirada até 26/11 — o comprador retira no local.",
+  "repo": { "owner": "rodrigone", "name": "bazar-mudanca", "branch": "main" },
+  "goatcounter": "",
+  "cities": {
+    "sp": {
+      "label": "São Paulo",
+      "area": "Brooklin / Cidade Monções",
+      "seller": "Rodrigo",
+      "whatsapp": "5519981811749",
+      "deadline": "2026-11-26"
+    },
+    "campinas": {
+      "label": "Campinas",
+      "area": "Campinas",
+      "seller": "Isabella",
+      "whatsapp": "",
+      "deadline": "2026-11-26"
+    }
+  },
+  "categories": ["Sofás", "Camas e colchões", "Eletrodomésticos", "Móveis", "Outros"]
+}

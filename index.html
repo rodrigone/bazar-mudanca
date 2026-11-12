@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bazar da Mudança</title>
+<meta name="description" content="Móveis e eletrodomésticos à venda em São Paulo e Campinas. Retirada até 26/11.">
+<meta property="og:title" content="Bazar da Mudança — SP e Campinas">
+<meta property="og:description" content="Sofás, cama box, geladeira, fogão e mais. Retirada até 26/11.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="hero wrap">
+  <h1 id="title">Bazar da Mudança</h1>
+  <p id="tagline">Tudo à venda.</p>
+  <div class="deadline">Retirada até <b id="deadline">26/11</b> · o comprador retira no local</div>
+</header>
+
+<nav class="filters" aria-label="Filtros">
+  <div class="wrap row">
+    <button class="chip" data-city="all" aria-pressed="true">Todos</button>
+    <button class="chip" data-city="sp" aria-pressed="false">São Paulo</button>
+    <button class="chip" data-city="campinas" aria-pressed="false">Campinas</button>
+    <span class="spacer"></span>
+    <select id="cat" aria-label="Categoria"><option value="">Todas as categorias</option></select>
+    <select id="sort" aria-label="Ordenar">
+      <option value="default">Destaques</option>
+      <option value="asc">Menor preço</option>
+      <option value="desc">Maior preço</option>
+    </select>
+  </div>
+</nav>
+
+<main class="wrap" id="list"></main>
+
+<footer class="wrap">
+  Pagamento por cartão ou Pix pelo link de cada item, ou combinado pelo WhatsApp. Itens vendidos saem do site.
+</footer>
+
+<dialog id="modal" aria-labelledby="m-title">
+  <div style="position:relative">
+    <div class="gallery" id="m-gallery"></div>
+    <button class="close" id="m-close" aria-label="Fechar">×</button>
+  </div>
+  <div class="m-body">
+    <div>
+      <div class="meta" id="m-city"></div>
+      <h3 id="m-title"></h3>
+      <div class="price" id="m-price"></div>
+    </div>
+    <p id="m-desc" style="margin:0"></p>
+    <div class="meta" id="m-extra"></div>
+    <div class="field">
+      <label for="m-date">Quando você vai retirar?</label>
+      <input type="date" id="m-date" required>
+      <div class="hint" id="m-date-hint"></div>
+    </div>
+    <div class="field">
+      <label for="m-name">Seu nome</label>
+      <input type="text" id="m-name" autocomplete="name" placeholder="Opcional">
+    </div>
+    <div class="steps" id="m-actions"></div>
+  </div>
+</dialog>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
