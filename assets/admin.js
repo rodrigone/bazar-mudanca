@@ -162,15 +162,15 @@
   function fillCfg() {
     $('#c-wa-sp').value = cfg.cities.sp.whatsapp; $('#c-wa-cps').value = cfg.cities.campinas.whatsapp;
     $('#c-dl-sp').value = cfg.cities.sp.deadline; $('#c-dl-cps').value = cfg.cities.campinas.deadline;
-    $('#c-gc').value = cfg.goatcounter || ''; $('#c-tag').value = cfg.tagline || '';
+    $('#c-gc').value = cfg.clarity || ''; $('#c-tag').value = cfg.tagline || '';
     const s = $('#lnk-stats');
-    if (cfg.goatcounter) { s.href = `https://${cfg.goatcounter}.goatcounter.com`; s.hidden = false; } else s.hidden = true;
+    if (cfg.clarity) { s.href = `https://clarity.microsoft.com/projects/view/${cfg.clarity}/dashboard`; s.hidden = false; } else s.hidden = true;
   }
   $('#btn-save-cfg').addEventListener('click', async () => {
     const digits = v => v.replace(/\D/g, '');
     cfg.cities.sp.whatsapp = digits($('#c-wa-sp').value); cfg.cities.campinas.whatsapp = digits($('#c-wa-cps').value);
     cfg.cities.sp.deadline = $('#c-dl-sp').value; cfg.cities.campinas.deadline = $('#c-dl-cps').value;
-    cfg.goatcounter = $('#c-gc').value.trim(); cfg.tagline = $('#c-tag').value.trim();
+    cfg.clarity = $('#c-gc').value.trim(); cfg.tagline = $('#c-tag').value.trim();
     try {
       const r = await putFile('data/config.json', b64encode(JSON.stringify(cfg, null, 2) + '\n'), 'Atualiza configurações do bazar', cfgSha);
       cfgSha = r.content.sha; fillCfg(); toast('Configurações salvas.');

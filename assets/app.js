@@ -8,15 +8,18 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // Analytics (GoatCounter, if configured)
-  function track(name, title) {
-    try { window.goatcounter && window.goatcounter.count({ path: name, title: title || name, event: true }); } catch (e) {}
+  // Microsoft Clarity: visitas, mapa de calor, gravações de sessão, cliques repetidos
+  function track(name) {
+    try { window.clarity && window.clarity('event', name); } catch (e) {}
   }
-  function loadAnalytics(code) {
-    if (!code) return;
-    const s = document.createElement('script');
-    s.async = true; s.src = '//gc.zgo.at/count.js';
-    s.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
-    document.head.appendChild(s);
+  function tag(k, v) { try { window.clarity && window.clarity('set', k, v); } catch (e) {} }
+  function loadAnalytics(id) {
+    if (!id) return;
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', id);
   }
 
   async function load() {
@@ -33,7 +36,7 @@
     $('#deadline').textContent = fmtDate(dl);
     const cats = [...new Set(state.items.map(i => i.category))];
     $('#cat').innerHTML += cats.map(c => `<option>${esc(c)}</option>`).join('');
-    loadAnalytics(cfg.goatcounter);
+    loadAnalytics(cfg.clarity);
     readHash();
     render();
     openFromHash();
@@ -99,11 +102,11 @@
     $('#m-extra').textContent = [i.condition && `Estado: ${i.condition}`, i.dimensions && `Medidas: ${i.dimensions}`].filter(Boolean).join(' · ');
     const d = $('#m-date');
     d.min = todayISO(); d.max = c.deadline; d.value = '';
-    $('#m-date-hint').textContent = `Escolha um dia até ${fmtDate(c.deadline)}. A retirada é por sua conta.`;
+    $('#m-date-hint').textContent = `Só uma preferência — o dia e horário a gente combina no WhatsApp. Retirada até ${fmtDate(c.deadline)}, por conta do comprador.`;
     renderActions();
     $('#modal').showModal();
     history.replaceState(null, '', '#item=' + i.id);
-    track('view/' + i.id, i.title);
+    track('ver_item'); tag('item', i.id); tag('cidade', i.city);
   }
 
   function waLink(paid) {
@@ -111,7 +114,7 @@
     const date = $('#m-date').value, name = $('#m-name').value.trim();
     const lines = [
       `Olá${c.seller ? ', ' + c.seller : ''}! ${paid ? 'Acabei de pagar' : 'Tenho interesse em'}: *${i.title}* (${brl(i.price)}) — ${c.label}.`,
-      date ? `Quero retirar em ${fmtDate(date)}.` : '',
+      date ? `Preferência de retirada: por volta de ${fmtDate(date)} (a combinar).` : 'Vamos combinar o dia da retirada?',
       name ? `Meu nome: ${name}.` : '',
       location.origin + location.pathname + '#item=' + i.id
     ].filter(Boolean);
@@ -120,8 +123,7 @@
 
   function renderActions() {
     const i = current, c = state.cfg.cities[i.city];
-    const hasDate = !!$('#m-date').value;
-    const dis = hasDate ? '' : 'aria-disabled="true"';
+    const dis = '';
     const parts = [];
     if (i.status === 'reservado') {
       parts.push(`<p class="hint">Este item está reservado. Mande mensagem para entrar na fila caso a venda não se concretize.</p>`);
@@ -137,18 +139,17 @@
     } else {
       parts.push(`<a class="btn wa" ${dis} href="${waLink(false)}" target="_blank" rel="noopener" data-act="wa-buy">Quero comprar no WhatsApp</a>`);
     }
-    if (!hasDate && c.whatsapp) parts.push(`<p class="hint">Escolha a data de retirada para continuar.</p>`);
     $('#m-actions').innerHTML = parts.join('');
   }
 
   // Events
   document.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
-    if (chip) { state.city = chip.dataset.city; history.replaceState(null, '', state.city === 'all' ? '#' : '#cidade=' + state.city); render(); return; }
+    if (chip) { track('filtro_' + chip.dataset.city); state.city = chip.dataset.city; history.replaceState(null, '', state.city === 'all' ? '#' : '#cidade=' + state.city); render(); return; }
     const cardEl = e.target.closest('.card');
     if (cardEl) { openItem(cardEl.dataset.id); return; }
     const act = e.target.closest('[data-act]');
-    if (act && current) track(act.dataset.act + '/' + current.id, current.title);
+    if (act && current) { track('clique_' + act.dataset.act.replace('-', '_')); tag('item', current.id); }
   });
   $('#cat').addEventListener('change', e => { state.cat = e.target.value; render(); });
   $('#sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
